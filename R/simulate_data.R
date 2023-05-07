@@ -6,6 +6,7 @@
 #'@param mean.range range of alternative E(z), from -mean.range to mean.range
 #'@importFrom mvtnorm rmvnorm
 #'@importFrom mvtnorm rmvt
+#'@importFrom mvtnorm qmvt
 #'@export
 simDataI.ult = function(N,Ulist,Pi=NULL,prior="t",t.df=10,mean.range = 4){
 
@@ -57,7 +58,7 @@ simDataI.ult = function(N,Ulist,Pi=NULL,prior="t",t.df=10,mean.range = 4){
   P = 2*(1-pnorm(abs(Bhat)))
   Shat = matrix(1,nrow=N,ncol=R)
 
-  list(B=B,P=P,Bhat=Bhat,Shat=Shat)
+  list(B=B,P=P,Bhat=Bhat,Shat=Shat,input = list(N=N,Ulist=Ulist,Pi=Pi,prior=prior,t.df=t.df,mean.range = mean.range))
 
 
 }

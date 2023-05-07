@@ -4,6 +4,7 @@
 #'@importFrom mashr get_significant_results
 #'@importFrom mashr cov_pca
 #'@importFrom mashr mash
+#'@importFrom mashr mash_1by1
 #'@export
 mash_wrapper = function(Bhat,P=NULL,npc=5,Shat=NULL,
                         nu = ncol(Bhat)+1,verbose=FALSE,
