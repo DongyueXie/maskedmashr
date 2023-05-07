@@ -4,15 +4,7 @@
 \alias{simDataI.ult}
 \title{simulate Z scores}
 \usage{
-simDataI.ult(
-  N,
-  Ulist,
-  Pi = NULL,
-  prior = "t",
-  t.df = 10,
-  half.uniform = FALSE,
-  mean.range = 4
-)
+simDataI.ult(N, Ulist, Pi = NULL, prior = "t", t.df = 10, mean.range = 4)
 }
 \arguments{
 \item{N}{total number of samples}
@@ -22,8 +14,6 @@ simDataI.ult(
 \item{Pi}{prior weights}
 
 \item{prior}{normal, t, uniform}
-
-\item{half.uniform}{True to generate only positive uniforms}
 
 \item{mean.range}{range of alternative E(z), from -mean.range to mean.range}
 }

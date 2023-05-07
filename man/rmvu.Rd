@@ -2,10 +2,10 @@
 % Please edit documentation in R/simulate_data.R
 \name{rmvu}
 \alias{rmvu}
-\title{generating multivariate uniform distribution}
+\title{generating multivariate uniform(0,1) distribution with correlation U}
 \usage{
 rmvu(n, U)
 }
 \description{
-generating multivariate uniform distribution
+generating multivariate uniform(0,1) distribution with correlation U
 }
