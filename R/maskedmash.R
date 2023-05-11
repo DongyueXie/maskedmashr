@@ -17,7 +17,9 @@ maskedmash_wrapper = function(Z,P=NULL,
                               verbose=FALSE,
                               strong_for_md = TRUE,
                               qval.thresh = 0.3,
-                              usepointmass = TRUE){
+                              usepointmass = TRUE,
+                              return_post_weights = FALSE){
+  t0 = Sys.time()
 
   if(is.null(Z)){
     stop('Z must be provided')
@@ -44,7 +46,7 @@ maskedmash_wrapper = function(Z,P=NULL,
   #strong = get_significant_results(m.1by1,0.2)
   if(strong_for_md){
     if(verbose){
-      cat("Finding strong effects for deconvolution using AdaPT...")
+      cat("Finding strong effects for deconvolution using AdaPT with masked data...")
       cat('\n')
     }
     ## get strong signals for estimating data-driven matrices
@@ -65,9 +67,11 @@ maskedmash_wrapper = function(Z,P=NULL,
   U.est = masked.md(data,strong=strong,thresh=thresh,
                     usepointmass = usepointmass,U.canon=U.c,
                     U.data=NULL,npc=npc,adjust=adjust,verbose=verbose)$U.est.adj
-  out = masked.mash(data,thresh=thresh,U.canon = U.c,U.data = U.est,verbose=verbose)
+  out = masked.mash(data,thresh=thresh,U.canon = U.c,U.data = U.est,verbose=verbose,return_post_weights=return_post_weights)
   out$p.thresh = p.thresh
   out$P = P
+  t1 = Sys.time()
+  out$run_time = difftime(t1,t0)
   out
 }
 
@@ -103,6 +107,7 @@ maskedmash_get_strong = function(P,p.thresh,qval_thresh=0.2){
 #'@param algorithm.version Rcpp or R for evaluating likelihood
 #'@param optmethod 'mixSQP' or 'EM'
 #'@param verbose TRUE to print progress
+#'@param return_post_weights whether return the full posterior weights. Could be large
 #'@param control a list of control parameters for SQP
 #'@param prior nullbiased or uniform
 #'@return a list of Posterior mean, sd, lfsr, lfdr, negativeProb.
@@ -126,6 +131,7 @@ masked.mash = function(data,
                        tol=1e-5,
                        verbose=TRUE,
                        printevery = 100,
+                       return_post_weights = FALSE,
                        control=list()){
   Z = data$Bhat
   N = nrow(Z)
@@ -214,16 +220,16 @@ masked.mash = function(data,
   out$maskedProp = sum(log(unlist(lapply(Z.comb,function(x){nrow(x$z.comb)})),2))/(N*R)
   out$loglik = loglik
   out$fitted_g = list(pi=Pi,Ulist = c(U.canon,U.data),grid = grid, usepointmass = usepointmass)
-  out$posterior_weights = post_weights
-
-
+  if(return_post_weights){
+    out$posterior_weights = post_weights
+  }
   out
 
 }
 
 
 
-#'@title Estimate prior weights using masked data
+#'@title Estimate prior weights using masked data, given covariance matrices.
 estimate_pi = function(Z.comb,U.canon,U.data,grid,usepointmass,Pi,max_iter,tol,
                        pi_thresh,normalizeU,algorithm.version,optmethod,verbose,printevery,control,prior){
 

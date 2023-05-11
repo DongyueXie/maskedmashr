@@ -2,7 +2,7 @@
 % Please edit documentation in R/maskedmash.R
 \name{estimate_pi}
 \alias{estimate_pi}
-\title{Estimate prior weights using masked data}
+\title{Estimate prior weights using masked data, given covariance matrices.}
 \usage{
 estimate_pi(
   Z.comb,
@@ -24,5 +24,5 @@ estimate_pi(
 )
 }
 \description{
-Estimate prior weights using masked data
+Estimate prior weights using masked data, given covariance matrices.
 }

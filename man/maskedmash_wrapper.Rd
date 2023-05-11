@@ -13,7 +13,8 @@ maskedmash_wrapper(
   verbose = FALSE,
   strong_for_md = TRUE,
   qval.thresh = 0.3,
-  usepointmass = TRUE
+  usepointmass = TRUE,
+  return_post_weights = FALSE
 )
 }
 \arguments{

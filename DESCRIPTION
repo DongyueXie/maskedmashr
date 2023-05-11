@@ -1,7 +1,7 @@
 Package: maskedmashr
 Type: Package
 Title: Fit masked-mash model to multivariate Z scores.
-Version: 0.1.2
+Version: 0.1.3
 Author: Dongyue Xie
 Maintainer: Dongyue Xie <yourself@gmail.com>
 Description: Fit masked-mash model to multivariate Z scores. The masking idea is from Lei & Fithian (2018)

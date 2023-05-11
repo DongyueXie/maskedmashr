@@ -23,6 +23,7 @@ masked.mash(
   tol = 1e-05,
   verbose = TRUE,
   printevery = 100,
+  return_post_weights = FALSE,
   control = list()
 )
 }
@@ -52,6 +53,8 @@ masked.mash(
 \item{prior}{nullbiased or uniform}
 
 \item{verbose}{TRUE to print progress}
+
+\item{return_post_weights}{whether return the full posterior weights. Could be large}
 
 \item{control}{a list of control parameters for SQP}
 }

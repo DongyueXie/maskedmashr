@@ -6,6 +6,7 @@
 
 mash_on_maskedZ = function(Z,P=NULL,p.thresh=0.5,npc=5,Shat=NULL,verbose=FALSE,eps=1e-10){
 
+  t0 = Sys.time()
   if(is.null(Z)){
     stop('Z must be provided')
   }
@@ -41,5 +42,7 @@ mash_on_maskedZ = function(Z,P=NULL,p.thresh=0.5,npc=5,Shat=NULL,verbose=FALSE,e
   out = mash_wrapper(Bhat=Z.mask,npc=npc,Shat=Shat,verbose=verbose)
   out$P = P
   out$p.thresh = p.thresh
+  t1 = Sys.time()
+  out$run_time = difftime(t1,t0)
   out
 }
