@@ -12,10 +12,12 @@ mash_wrapper(
   nu = ncol(Bhat) + 1,
   verbose = FALSE,
   adjust = "lb",
+  md.method = "teem",
+  strong.thresh = 0.2,
   U.true = NULL,
-  U.ed = NULL,
-  n.ed = NULL,
-  adj.const = 0.1
+  U.data = NULL,
+  n.data = NULL,
+  adj.const = 0.001
 )
 }
 \arguments{

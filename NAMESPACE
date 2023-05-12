@@ -2,6 +2,7 @@
 
 export(fdp)
 export(fsp)
+export(mashFDR)
 export(mash_on_maskedZ)
 export(mash_wrapper)
 export(masked.mash)

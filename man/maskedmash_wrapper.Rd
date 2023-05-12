@@ -10,6 +10,7 @@ maskedmash_wrapper(
   p.thresh = 0.5,
   npc = 5,
   adjust = "lb",
+  adj.const = 0.001,
   verbose = FALSE,
   strong_for_md = TRUE,
   qval.thresh = 0.3,

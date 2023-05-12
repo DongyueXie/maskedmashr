@@ -14,6 +14,7 @@ maskedmash_wrapper = function(Z,P=NULL,
                               p.thresh=0.5,
                               npc=5,
                               adjust = 'lb',
+                              adj.const = 1e-3,
                               verbose=FALSE,
                               strong_for_md = TRUE,
                               qval.thresh = 0.3,
@@ -46,7 +47,7 @@ maskedmash_wrapper = function(Z,P=NULL,
   #strong = get_significant_results(m.1by1,0.2)
   if(strong_for_md){
     if(verbose){
-      cat("Finding strong effects for deconvolution using AdaPT with masked data...")
+      cat("Finding strong effects for deconvolution using masked data...")
       cat('\n')
     }
     ## get strong signals for estimating data-driven matrices
@@ -66,7 +67,7 @@ maskedmash_wrapper = function(Z,P=NULL,
   #browser()
   U.est = masked.md(data,strong=strong,thresh=thresh,
                     usepointmass = usepointmass,U.canon=U.c,
-                    U.data=NULL,npc=npc,adjust=adjust,verbose=verbose)$U.est.adj
+                    U.data=NULL,npc=npc,adjust=adjust,verbose=verbose,adj.const=adj.const)$U.est.adj
   out = masked.mash(data,thresh=thresh,U.canon = U.c,U.data = U.est,verbose=verbose,return_post_weights=return_post_weights)
   out$p.thresh = p.thresh
   out$P = P

@@ -26,7 +26,8 @@ masked.md = function(data,
                      max_iter=1000,
                      tol=1e-5,
                      verbose=TRUE,
-                     printevery = 50){
+                     printevery = 50,
+                     adj.const = 1e-3){
 
   Z = data$Bhat
   if(is.null(strong)){
@@ -146,8 +147,13 @@ masked.md = function(data,
           #temp = eigen(U.est[[k]])
           #temp$vectors%*%(diag(pmax(2/sqrt(nk),temp$values)))%*%t(temp$vectors)
         }else{
-          NULL
+          U.est[[k]] + 2*diag(sqrt(2/N),R)
         }
+      })
+    }
+    if(adjust == "const"){
+      U.est.adj = lapply(1:length(U.est),function(k){
+        cov2cor(U.est[[k]]) + adj.const
       })
     }
   }

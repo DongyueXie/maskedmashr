@@ -20,7 +20,8 @@ masked.md(
   max_iter = 1000,
   tol = 1e-05,
   verbose = TRUE,
-  printevery = 50
+  printevery = 50,
+  adj.const = 0.001
 )
 }
 \arguments{

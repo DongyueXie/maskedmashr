@@ -33,51 +33,62 @@ fit_mash_fdr = mashFDR(fit_mash)
 
 
 
-#
-# sim_study = function(Ulist,prior_weight,N,prior,df,
-#                      seed=12345,nreps = 20,mc.cores = 4,npc=5,
-#                      half.uniform=FALSE,mean.range=4){
-#
-#   set.seed(seed)
-#
-#   result = mclapply(1:nreps,function(i){
-#     # generate data
-#     simdata = simDataI.ult(N,Ulist,prior_weight,prior,df,half.uniform,mean.range)
-#     #datax = mash_set_data(simdata$Bhat,simdata$Shat)
-#     # fit model
-#     mash.out = mash_wrapper(simdata$Bhat,npc=npc)
-#
-#     mashonmaskedZ.out = mash_mask(simdata$Bhat,simdata$P,p.thresh = 0.5,npc=npc)
-#     mashonmaskedZ.out2 = mash_mask(simdata$Bhat,simdata$P,p.thresh = 0.4,npc=npc)
-#     mashonmaskedZ.out3 = mash_mask(simdata$Bhat,simdata$P,p.thresh = 0.3,npc=npc)
-#     mashonmaskedZ.out4 = mash_mask(simdata$Bhat,simdata$P,p.thresh = 0.2,npc=npc)
-#     mashonmaskedZ.out5 = mash_mask(simdata$Bhat,simdata$P,p.thresh = 0.1,npc=npc)
-#     mashonmaskedZ.out6 = mash_mask(simdata$Bhat,simdata$P,p.thresh = 0.05,npc=npc)
-#
-#     maskedmash.out = maskedmash_wrapper(simdata$Bhat,simdata$P,p.thresh = 0.5,npc=npc)
-#     maskedmash.out2 = maskedmash_wrapper(simdata$Bhat,simdata$P,p.thresh=0.4,npc=npc)
-#     maskedmash.out3 = maskedmash_wrapper(simdata$Bhat,simdata$P,p.thresh=0.3,npc=npc)
-#     maskedmash.out4 = maskedmash_wrapper(simdata$Bhat,simdata$P,p.thresh=0.2,npc=npc)
-#     maskedmash.out5 = maskedmash_wrapper(simdata$Bhat,simdata$P,p.thresh=0.1,npc=npc)
-#     maskedmash.out6 = maskedmash_wrapper(simdata$Bhat,simdata$P,p.thresh=0.05,npc=npc)
-#
-#     list(data = simdata,
-#          mash.out=mash.out,
-#          mashonmaskedZ.out=mashonmaskedZ.out,
-#          mashonmaskedZ.out2=mashonmaskedZ.out2,
-#          mashonmaskedZ.out3=mashonmaskedZ.out3,
-#          mashonmaskedZ.out4=mashonmaskedZ.out4,
-#          mashonmaskedZ.out5=mashonmaskedZ.out5,
-#          mashonmaskedZ.out6=mashonmaskedZ.out6,
-#          maskedmash.out=maskedmash.out,
-#          maskedmash.out2=maskedmash.out2,
-#          maskedmash.out3=maskedmash.out3,
-#          maskedmash.out4=maskedmash.out4,
-#          maskedmash.out5=maskedmash.out5,
-#          maskedmash.out6=maskedmash.out6)
-#
-#   },mc.cores = mc.cores)
-#
-#   result
-#
-# }
+library(parallel)
+sim_study = function(Ulist,prior_weight,N,prior,df,
+                     seed=12345,nreps = 20,mc.cores = 4,npc=5,mean.range=4){
+
+  set.seed(seed)
+
+  result = mclapply(1:nreps,function(i){
+    print(paste('Running ',i,sep=''))
+    # generate data
+    simdata = simDataI.ult(N,Ulist,prior_weight,prior,df,mean.range)
+    #datax = mash_set_data(simdata$Bhat,simdata$Shat)
+    # fit model
+    mash.out = mash_wrapper(simdata$Bhat,npc=npc,adjust = 'lb',md.method = 'teem')
+    mash.out2 = mash_wrapper(simdata$Bhat,npc=npc,adjust = 'const',md.method = 'teem')
+    # mashonmaskedZ.out = mash_mask(simdata$Bhat,simdata$P,p.thresh = 0.5,npc=npc)
+    # mashonmaskedZ.out2 = mash_mask(simdata$Bhat,simdata$P,p.thresh = 0.4,npc=npc)
+    # mashonmaskedZ.out3 = mash_mask(simdata$Bhat,simdata$P,p.thresh = 0.3,npc=npc)
+    # mashonmaskedZ.out4 = mash_mask(simdata$Bhat,simdata$P,p.thresh = 0.2,npc=npc)
+    # mashonmaskedZ.out5 = mash_mask(simdata$Bhat,simdata$P,p.thresh = 0.1,npc=npc)
+    # mashonmaskedZ.out6 = mash_mask(simdata$Bhat,simdata$P,p.thresh = 0.05,npc=npc)
+    #
+    # maskedmash.out = maskedmash_wrapper(simdata$Bhat,simdata$P,p.thresh = 0.5,npc=npc)
+    # maskedmash.out2 = maskedmash_wrapper(simdata$Bhat,simdata$P,p.thresh=0.4,npc=npc)
+    # maskedmash.out3 = maskedmash_wrapper(simdata$Bhat,simdata$P,p.thresh=0.3,npc=npc)
+    # maskedmash.out4 = maskedmash_wrapper(simdata$Bhat,simdata$P,p.thresh=0.2,npc=npc)
+    maskedmash.out5 = maskedmash_wrapper(simdata$Bhat,simdata$P,p.thresh=0.1,npc=npc,adjust = 'lb')
+    maskedmash.out6 = maskedmash_wrapper(simdata$Bhat,simdata$P,p.thresh=0.1,npc=npc,adjust = 'const')
+    # maskedmash.out6 = maskedmash_wrapper(simdata$Bhat,simdata$P,p.thresh=0.05,npc=npc)
+    list(data=simdata,
+         mash.out = mash.out,
+         mash.out2 = mash.out2,
+         maskedmash.out5 = maskedmash.out5,
+         maskedmash.out6 = maskedmash.out6
+         )
+
+    # list(data = simdata,
+    #      mash.out=mash.out,
+    #      mashonmaskedZ.out=mashonmaskedZ.out,
+    #      mashonmaskedZ.out2=mashonmaskedZ.out2,
+    #      mashonmaskedZ.out3=mashonmaskedZ.out3,
+    #      mashonmaskedZ.out4=mashonmaskedZ.out4,
+    #      mashonmaskedZ.out5=mashonmaskedZ.out5,
+    #      mashonmaskedZ.out6=mashonmaskedZ.out6,
+    #      maskedmash.out=maskedmash.out,
+    #      maskedmash.out2=maskedmash.out2,
+    #      maskedmash.out3=maskedmash.out3,
+    #      maskedmash.out4=maskedmash.out4,
+    #      maskedmash.out5=maskedmash.out5,
+    #      maskedmash.out6=maskedmash.out6)
+
+  },mc.cores = mc.cores)
+
+  result
+
+}
+
+
+res = sim_study(Ulist,prior_weight =  rep(1/length(Ulist),length(Ulist)),N=length(Ulist)*500,prior='uniform',df=10,
+                seed=12345,nreps = 20,mc.cores = 2,npc=5,mean.range=4)
