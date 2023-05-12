@@ -2,7 +2,7 @@
 #'@description order the tests from most to least significant based on lfsr, and reject least significant ones until FDP<alpha
 #'@param obj fitted mash object
 #'@param alpha target FDR level
-
+#'@export
 mashFDR = function(obj,alpha = 0.05){
 
   lfsr = obj$result$lfsr
