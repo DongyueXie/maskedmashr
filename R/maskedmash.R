@@ -5,7 +5,7 @@
 #'@param npc number of data driven covariance matrices for mash
 #'@param adjust method for adjusting diagonal of estimated covariance matrices, "lb" or "prior".
 #'@param strong_for_md Whether use strong effects for estimating data driven cov matrices
-#'@param qval.thresh for deciding strong effects.
+#'@param strong.thresh for deciding strong effects.
 #'@importFrom mashr mash_set_data
 #'@importFrom mashr cov_canonical
 #'@export
@@ -17,7 +17,7 @@ maskedmash_wrapper = function(Z,P=NULL,
                               adj.const = 1e-3,
                               verbose=FALSE,
                               strong_for_md = TRUE,
-                              qval.thresh = 0.3,
+                              strong.thresh = 0.2,
                               usepointmass = TRUE,
                               return_post_weights = FALSE){
   t0 = Sys.time()
@@ -33,25 +33,23 @@ maskedmash_wrapper = function(Z,P=NULL,
   N = nrow(Z)
 
   P.temp = P
-  P.temp = pmax(P.temp,1e-10)
-  P.temp = pmin(P.temp,1-1e-10)
+  P.temp = pmax(P.temp,1e-12)
+  P.temp = pmin(P.temp,1-1e-12)
 
   Z = sign(Z)*qnorm(1-P.temp/2)
   if(is.null(p.thresh)){
     p.thresh = 0.5
   }
   thresh = qnorm(1-p.thresh/2)
-  data = mash_set_data(Z)
-  U.c = cov_canonical(data)
-  #m.1by1 = mash_1by1(data)
-  #strong = get_significant_results(m.1by1,0.2)
+  Z = mash_set_data(Z)
+  U.c = cov_canonical(Z)
   if(strong_for_md){
     if(verbose){
       cat("Finding strong effects for deconvolution using masked data...")
       cat('\n')
     }
     ## get strong signals for estimating data-driven matrices
-    strong = maskedmash_get_strong(P,p.thresh,qval_thresh = qval.thresh)
+    strong = maskedmash_get_strong(Z$Bhat,thresh,strong.thresh = strong.thresh)
     if(verbose){
       cat(paste("Found",length(strong),"strong effects",sep=" "))
       cat('\n')
@@ -65,10 +63,10 @@ maskedmash_wrapper = function(Z,P=NULL,
 
   #U.pca = cov_pca(data,npc,strong)
   #browser()
-  U.est = masked.md(data,strong=strong,thresh=thresh,
+  U.est = masked.md(Z,strong=strong,thresh=thresh,
                     usepointmass = usepointmass,U.canon=U.c,
                     U.data=NULL,npc=npc,adjust=adjust,verbose=verbose,adj.const=adj.const)$U.est.adj
-  out = masked.mash(data,thresh=thresh,U.canon = U.c,U.data = U.est,verbose=verbose,return_post_weights=return_post_weights)
+  out = masked.mash(Z,thresh=thresh,U.canon = U.c,U.data = U.est,verbose=verbose,return_post_weights=return_post_weights)
   out$p.thresh = p.thresh
   out$P = P
   t1 = Sys.time()
@@ -76,23 +74,29 @@ maskedmash_wrapper = function(Z,P=NULL,
   out
 }
 
-#'@title get strong effects index
+#'@title get strong effects index based on masked test statistics
 #'@importFrom matrixStats rowMins
-#'@importFrom adaptMT adapt_glm
+#'@importFrom ashr ash
 #'@export
-maskedmash_get_strong = function(P,p.thresh,qval_thresh=0.2){
-  qv = matrix(nrow=nrow(P),ncol=ncol(P))
-  for(r in 1:ncol(P)){
-    qv[,r] = adapt_glm(x=data.frame(x=rep(1,nrow(P))),
-                    pvals = P[,r],
-                    pi_formulas = "x",
-                    mu_formulas = "x",
-                    nfits=1,
-                    s0=rep(p.thresh,nrow(P)),
-                    alphas = 0,
-                    verbose = list(print = FALSE, fit = FALSE, ms = FALSE))$qvals
+maskedmash_get_strong = function(Z,thresh,strong.thresh=0.2){
+  qv = matrix(nrow=nrow(Z),ncol=ncol(Z))
+  Z.mask = t(apply(Z,1,function(x){
+    x.alt = mask.func(x)
+    is.mask = is.mask.z(x,thresh)
+    is.mask*sign(x)*pmax(abs(x),abs(x.alt)) + (1-is.mask)*x
+    }))
+  for(r in 1:ncol(Z)){
+    qv[,r] = ash(Z.mask[,r],1)$result$lfsr
+    # qv[,r] = adapt_glm(x=data.frame(x=rep(1,nrow(P))),
+    #                 pvals = P[,r],
+    #                 pi_formulas = "x",
+    #                 mu_formulas = "x",
+    #                 nfits=1,
+    #                 s0=rep(p.thresh,nrow(P)),
+    #                 alphas = 0,
+    #                 verbose = list(print = FALSE, fit = FALSE, ms = FALSE))$qvals
   }
-  return(which(rowMins(qv)<=qval_thresh))
+  return(which(rowMins(qv)<=strong.thresh))
 }
 
 #'@title masked mash

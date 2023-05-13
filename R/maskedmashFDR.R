@@ -1,6 +1,6 @@
 #'@title masked mash for FDR control
-#'@description order the tests from most to least significant based on lfsr, and reject least significant ones until FDP<alpha
-#'@param obj fitted maskedmash object
+#'@description order the tests from most to least significant based on lfsr from masked.mash, and remove least significant ones until FDP<alpha
+#'@param obj fitted maskedmash object, or a list of P, result$lfsr, p.thresh
 #'@param alpha target FDR level
 #'@return a list of rej.set indx and fdp_hat
 #'@export
@@ -52,9 +52,11 @@ maskedmashFDR = function(obj,alpha = 0.05){
   }
 
   if(is.null(rej.idx)){
-    list(rej.set=NULL,fdp=0)
+    list(rej.set=NULL,fdp.hat=0,alpha=alpha)
   }else{
-    list(rej.set=rej.set[1:rej.idx],fdp=fdp.t)
+    rej.set=rej.set[1:rej.idx]
+    rej.set=rej.set[P[rej.set]<0.5]
+    list(rej.set=rej.set,fdp.hat=fdp.t,alpha=alpha)
   }
 
 }

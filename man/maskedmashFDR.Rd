@@ -7,7 +7,7 @@
 maskedmashFDR(obj, alpha = 0.05)
 }
 \arguments{
-\item{obj}{fitted maskedmash object}
+\item{obj}{fitted maskedmash object, or a list of P, result$lfsr, p.thresh}
 
 \item{alpha}{target FDR level}
 }
@@ -15,5 +15,5 @@ maskedmashFDR(obj, alpha = 0.05)
 a list of rej.set indx and fdp_hat
 }
 \description{
-order the tests from most to least significant based on lfsr, and reject least significant ones until FDP<alpha
+order the tests from most to least significant based on lfsr from masked.mash, and remove least significant ones until FDP<alpha
 }

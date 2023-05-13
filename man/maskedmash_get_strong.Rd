@@ -2,10 +2,10 @@
 % Please edit documentation in R/maskedmash.R
 \name{maskedmash_get_strong}
 \alias{maskedmash_get_strong}
-\title{get strong effects index}
+\title{get strong effects index based on masked test statistics}
 \usage{
-maskedmash_get_strong(P, p.thresh, qval_thresh = 0.2)
+maskedmash_get_strong(Z, thresh, strong.thresh = 0.2)
 }
 \description{
-get strong effects index
+get strong effects index based on masked test statistics
 }

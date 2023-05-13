@@ -1,6 +1,6 @@
 
 
-#'@title mask on masked Z scores
+#'@title mash on masked Z scores
 #'@description The procedure masks the z scores, by taking the bigger one(absolute value) in masked set, then fit mash.
 #'@export
 

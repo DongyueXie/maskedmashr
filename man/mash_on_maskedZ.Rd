@@ -2,7 +2,7 @@
 % Please edit documentation in R/mash_on_maskedZ.R
 \name{mash_on_maskedZ}
 \alias{mash_on_maskedZ}
-\title{mask on masked Z scores}
+\title{mash on masked Z scores}
 \usage{
 mash_on_maskedZ(
   Z,

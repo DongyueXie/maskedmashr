@@ -15,13 +15,24 @@ datax = simDataI.ult(2000,Ulist,prior = 'uniform')
 
 fit_maskedmash = maskedmash_wrapper(datax$Bhat)
 fit_mm_fdr = maskedmashFDR(fit_maskedmash)
+fdp(fit_mm_fdr$rej.set,which(datax$B!=0))
+powr(fit_mm_fdr$rej.set,which(datax$B!=0))
 
 fit_maskedmash_onZ = mash_on_maskedZ(datax$Bhat,verbose = T)
 fit_maskedmash_onZ_fdr = maskedmashFDR(fit_maskedmash_onZ)
+fdp(fit_maskedmash_onZ_fdr$rej.set,which(datax$B!=0))
+powr(fit_maskedmash_onZ_fdr$rej.set,which(datax$B!=0))
+
+
+fit_ash_on_maskedZ = ash_on_maskedZ(datax$Bhat,verbose = T)
+fit_ash_on_maskedZ_fdr = maskedmashFDR(fit_ash_on_maskedZ)
+fdp(fit_ash_on_maskedZ_fdr$rej.set,which(datax$B!=0))
+powr(fit_ash_on_maskedZ_fdr$rej.set,which(datax$B!=0))
 
 fit_mash = mash_wrapper(datax$Bhat)
 fit_mash_fdr = mashFDR(fit_mash)
-
+fdp(fit_mash_fdr,which(datax$B!=0))
+powr(fit_mash_fdr,which(datax$B!=0))
 
 
 

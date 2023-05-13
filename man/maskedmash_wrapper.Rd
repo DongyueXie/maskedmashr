@@ -13,7 +13,7 @@ maskedmash_wrapper(
   adj.const = 0.001,
   verbose = FALSE,
   strong_for_md = TRUE,
-  qval.thresh = 0.3,
+  strong.thresh = 0.2,
   usepointmass = TRUE,
   return_post_weights = FALSE
 )
@@ -31,7 +31,7 @@ maskedmash_wrapper(
 
 \item{strong_for_md}{Whether use strong effects for estimating data driven cov matrices}
 
-\item{qval.thresh}{for deciding strong effects.}
+\item{strong.thresh}{for deciding strong effects.}
 }
 \description{
 Wrapper function for running masked mash
