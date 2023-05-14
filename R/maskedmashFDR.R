@@ -55,7 +55,7 @@ maskedmashFDR = function(obj,alpha = 0.05){
     list(rej.set=NULL,fdp.hat=0,alpha=alpha)
   }else{
     rej.set=rej.set[1:rej.idx]
-    rej.set=rej.set[P[rej.set]<0.5]
+    rej.set=rej.set[obj$P[rej.set]<0.5]
     list(rej.set=rej.set,fdp.hat=fdp.t,alpha=alpha)
   }
 
