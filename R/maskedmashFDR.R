@@ -61,6 +61,12 @@ maskedmashFDR = function(obj,alpha = 0.05){
 
 }
 
+#'@title masked mash for FDR control for each condition
+#'@description order the tests from most to least significant based on lfsr from masked.mash, and remove least significant ones until FDP<alpha
+#'@param obj fitted maskedmash object, or a list of P, result$lfsr, p.thresh
+#'@param alpha target FDR level
+#'@return a list of rej.set indx and fdp_hat
+#'@export
 maskedmashFDR_condition = function(obj,alpha = 0.05){
   P = obj$P[,obj$r]
   #N = nrow(P)
