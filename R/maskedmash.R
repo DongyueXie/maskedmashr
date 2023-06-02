@@ -49,7 +49,13 @@ maskedmash_wrapper = function(Z,P=NULL,
       cat('\n')
     }
     ## get strong signals for estimating data-driven matrices
-    strong = maskedmash_get_strong(Z$Bhat,thresh,strong.thresh = strong.thresh)
+
+    Z.mask = t(apply(Z$Bhat,1,function(x){
+      x.alt = mask.func(x)
+      is.mask = is.mask.z(x,thresh)
+      is.mask*sign(x)*pmax(abs(x),abs(x.alt)) + (1-is.mask)*x
+    }))
+    strong = maskedmash_get_strong(Z.mask,thresh,strong.thresh = strong.thresh)
     if(verbose){
       cat(paste("Found",length(strong),"strong effects",sep=" "))
       cat('\n')
@@ -63,10 +69,11 @@ maskedmash_wrapper = function(Z,P=NULL,
 
   #U.pca = cov_pca(data,npc,strong)
   #browser()
-  U.est = masked.md(Z,strong=strong,thresh=thresh,
+  Z.comb = mask.Z(Z$Bhat,thresh)
+  U.est = masked.md(Z$Bhat,Z.comb,strong=strong,thresh=thresh,
                     usepointmass = usepointmass,U.canon=U.c,
                     U.data=NULL,npc=npc,adjust=adjust,verbose=verbose,adj.const=adj.const)$U.est.adj
-  out = masked.mash(Z,thresh=thresh,U.canon = U.c,U.data = U.est,verbose=verbose,return_post_weights=return_post_weights)
+  out = masked.mash(Z$Bhat,Z.comb,thresh=thresh,U.canon = U.c,U.data = U.est,verbose=verbose,return_post_weights=return_post_weights)
   out$p.thresh = p.thresh
   out$P = P
   t1 = Sys.time()
@@ -78,14 +85,9 @@ maskedmash_wrapper = function(Z,P=NULL,
 #'@importFrom matrixStats rowMins
 #'@importFrom ashr ash
 #'@export
-maskedmash_get_strong = function(Z,thresh,strong.thresh=0.2){
-  qv = matrix(nrow=nrow(Z),ncol=ncol(Z))
-  Z.mask = t(apply(Z,1,function(x){
-    x.alt = mask.func(x)
-    is.mask = is.mask.z(x,thresh)
-    is.mask*sign(x)*pmax(abs(x),abs(x.alt)) + (1-is.mask)*x
-    }))
-  for(r in 1:ncol(Z)){
+maskedmash_get_strong = function(Z.mask,thresh,strong.thresh=0.2){
+  qv = matrix(nrow=nrow(Z.mask),ncol=ncol(Z.mask))
+  for(r in 1:ncol(Z.mask)){
     qv[,r] = ash(Z.mask[,r],1)$result$lfsr
     # qv[,r] = adapt_glm(x=data.frame(x=rep(1,nrow(P))),
     #                 pvals = P[,r],
@@ -117,7 +119,8 @@ maskedmash_get_strong = function(Z,thresh,strong.thresh=0.2){
 #'@param prior nullbiased or uniform
 #'@return a list of Posterior mean, sd, lfsr, lfdr, negativeProb.
 #'@export
-masked.mash = function(data,
+masked.mash = function(Z,
+                       Z.comb,
                        thresh=NULL,
                        Pi=NULL,
                        U.canon=NULL,
@@ -138,7 +141,7 @@ masked.mash = function(data,
                        printevery = 100,
                        return_post_weights = FALSE,
                        control=list()){
-  Z = data$Bhat
+  #Z = data$Bhat
   N = nrow(Z)
   R = ncol(Z)
   I_R = diag(R)
@@ -147,7 +150,7 @@ masked.mash = function(data,
     # mask all a-scores
     thresh = qnorm(0.75)
   }
-  Z.comb = mask.Z(Z,thresh)
+
 
   # if prior is fixed, then directly calculate posterior summaries
 
@@ -186,7 +189,7 @@ masked.mash = function(data,
 
     ############## estimate weights ####################
     if(is.null(grid)){
-      grid = mashr:::autoselect_grid(data,gridmult)
+      grid = mashr:::autoselect_grid(mash_set_data(Z),gridmult)
     }
     if(verbose){
       cat("Estimating prior weights...")
@@ -211,8 +214,8 @@ masked.mash = function(data,
   result = calc_post_summary(Z.comb,xUlist,Pi,post_weights,pi_thresh)
 
 
-  effect_names = rownames(data$Bhat)
-  condition_names = colnames(data$Bhat)
+  effect_names = rownames(Z)
+  condition_names = colnames(Z)
   for (i in names(result)) {
     if (length(dim(result[[i]])) == 2) {
       colnames(result[[i]]) = condition_names

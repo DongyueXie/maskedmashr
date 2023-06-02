@@ -11,7 +11,8 @@
 #'@param adjust adjust diagonal of estimated U
 #'@param nu prior df of U. If NULL, nu = R+1, for adjust = 'prior'
 #'@importFrom mashr cov_pca
-masked.md = function(data,
+masked.md = function(Z,
+                     Z.comb,
                      strong=NULL,
                      thresh=NULL,
                      Pi=NULL,
@@ -29,7 +30,7 @@ masked.md = function(data,
                      printevery = 50,
                      adj.const = 1e-3){
 
-  Z = data$Bhat
+  #Z = data$Bhat
   if(is.null(strong)){
     strong = 1:nrow(Z)
   }else{
@@ -46,7 +47,7 @@ masked.md = function(data,
     thresh = qnorm(0.75)
   }
 
-  Z.comb = mask.Z(Z,thresh)
+  #Z.comb = mask.Z(Z,thresh)
   if(is.null(U.data)){
     U.data = cov_pca(mash_set_data(do.call(rbind, lapply(Z.comb, function(x) x$z.mask))),npc)
   }

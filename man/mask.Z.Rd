@@ -4,12 +4,14 @@
 \alias{mask.Z}
 \title{set augmented z scores}
 \usage{
-mask.Z(Z, thresh)
+mask.Z(Z, thresh, r = NULL)
 }
 \arguments{
 \item{Z}{z score matrix}
 
 \item{thresh}{z score threshoold}
+
+\item{r}{the condition to be masked if we are testing one condition}
 }
 \value{
 a list, Z.comb: each element is a Ji*R matrix; z.mask: masked z scores; z.det.jacob

@@ -7,9 +7,13 @@ mask.func = function(z){
 #'@title returns all possible combinations of masked z-scores and |det(Jacobian)|
 #'@param z a vector
 #'@param thresh |z| larger than thresh or |z|<=s(t) will be masked. when thresh<=Phi^{-1}(0.75), all masked.
+#'@param r for condition specific testing
 #'@return a J*R matrix of all possible z scores, a length J vector of |det(Jacobian)|, and masked z scores.
-enumerate.z = function(z,thresh){
+enumerate.z = function(z,thresh,r=NULL){
   masking = is.mask.z(z,thresh)
+  if(!is.null(r)){
+    masking[-r] = FALSE
+  }
   s_z = mask.func(z)*masking + z*(1-masking)
   # This z.mask = pmin(z,s_z) is what i wrote in 2021, but i now think it should be..
   # z.mask = pmin(z,s_z)
@@ -43,10 +47,11 @@ is.mask.p = function(p,thresh){
 #'@title set augmented z scores
 #'@param Z z score matrix
 #'@param thresh z score threshoold
+#'@param r the condition to be masked if we are testing one condition
 #'@return a list, Z.comb: each element is a Ji*R matrix; z.mask: masked z scores; z.det.jacob
-mask.Z = function(Z,thresh){
+mask.Z = function(Z,thresh,r=NULL){
   Z.list = lapply(seq_len(nrow(Z)),function(i){Z[i,]})
-  Z.comb = lapply(Z.list, function(x){enumerate.z(x,thresh)})
+  Z.comb = lapply(Z.list, function(x){enumerate.z(x,thresh,r)})
   Z.comb
 }
 

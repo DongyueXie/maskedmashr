@@ -5,7 +5,8 @@
 \title{masked deconvolution: estimate prior covariance matrices using multivariate deconvolution and masked data}
 \usage{
 masked.md(
-  data,
+  Z,
+  Z.comb,
   strong = NULL,
   thresh = NULL,
   Pi = NULL,
@@ -25,8 +26,6 @@ masked.md(
 )
 }
 \arguments{
-\item{data}{object from `mash_set_data` function}
-
 \item{strong}{index of samples that have "strong" effects.}
 
 \item{thresh}{NULL or a number, |z-score| larger than thresh or |z|<=s(t) will be masked. when thresh<=Phi^{-1}(0.75), all masked.}
@@ -42,6 +41,8 @@ masked.md(
 \item{adjust}{adjust diagonal of estimated U}
 
 \item{nu}{prior df of U. If NULL, nu = R+1, for adjust = 'prior'}
+
+\item{data}{object from `mash_set_data` function}
 }
 \description{
 This function estimates prior weights and variances using masked z scores. If strong

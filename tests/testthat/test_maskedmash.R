@@ -18,6 +18,11 @@ fit_mm_fdr = maskedmashFDR(fit_maskedmash)
 fdp(fit_mm_fdr$rej.set,which(datax$B!=0))
 powr(fit_mm_fdr$rej.set,which(datax$B!=0))
 
+fit_maskedmash = maskedmash_condition_wrapper(datax$Bhat,r=2)
+fit_mm_fdr = maskedmashFDR_condition(fit_maskedmash)
+fdp(fit_mm_fdr$rej.set,which(datax$B[,2]!=0))
+powr(fit_mm_fdr$rej.set,which(datax$B[,2]!=0))
+
 fit_maskedmash_onZ = mash_on_maskedZ(datax$Bhat,verbose = T)
 fit_maskedmash_onZ_fdr = maskedmashFDR(fit_maskedmash_onZ)
 fdp(fit_maskedmash_onZ_fdr$rej.set,which(datax$B!=0))

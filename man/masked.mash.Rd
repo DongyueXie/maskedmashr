@@ -5,7 +5,8 @@
 \title{masked mash}
 \usage{
 masked.mash(
-  data,
+  Z,
+  Z.comb,
   thresh = NULL,
   Pi = NULL,
   U.canon = NULL,
@@ -28,8 +29,6 @@ masked.mash(
 )
 }
 \arguments{
-\item{data}{object from mash_set_data}
-
 \item{thresh}{NULL or a number, |z-score| larger than thresh will be masked.}
 
 \item{Pi}{prior weights; either fixed or as init value}
@@ -57,6 +56,8 @@ masked.mash(
 \item{return_post_weights}{whether return the full posterior weights. Could be large}
 
 \item{control}{a list of control parameters for SQP}
+
+\item{data}{object from mash_set_data}
 }
 \value{
 a list of Posterior mean, sd, lfsr, lfdr, negativeProb.

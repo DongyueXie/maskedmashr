@@ -4,7 +4,7 @@
 \alias{maskedmash_get_strong}
 \title{get strong effects index based on masked test statistics}
 \usage{
-maskedmash_get_strong(Z, thresh, strong.thresh = 0.2)
+maskedmash_get_strong(Z.mask, thresh, strong.thresh = 0.2)
 }
 \description{
 get strong effects index based on masked test statistics

@@ -4,12 +4,14 @@
 \alias{enumerate.z}
 \title{returns all possible combinations of masked z-scores and |det(Jacobian)|}
 \usage{
-enumerate.z(z, thresh)
+enumerate.z(z, thresh, r = NULL)
 }
 \arguments{
 \item{z}{a vector}
 
 \item{thresh}{|z| larger than thresh or |z|<=s(t) will be masked. when thresh<=Phi^{-1}(0.75), all masked.}
+
+\item{r}{for condition specific testing}
 }
 \value{
 a J*R matrix of all possible z scores, a length J vector of |det(Jacobian)|, and masked z scores.
